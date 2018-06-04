@@ -1907,6 +1907,21 @@ index 389315a25d7da30d71b59e3803ab795bc4c18e1c..79797fe7e674f9f6d2a65de542f262a9
    // Called to read raw (pre-filtered) data from this Job. Reads at most
    // |buf_size| bytes into |buf|.
    // Possible return values:
+diff --git a/services/ui/ws2/BUILD.gn b/services/ui/ws2/BUILD.gn
+index 0e076f30dd9f011cf0ded25aada489c1eabbc824..a4c335ef949240272cc192afe00e1b648e8b9e1e 100644
+--- a/services/ui/ws2/BUILD.gn
++++ b/services/ui/ws2/BUILD.gn
+@@ -10,10 +10,6 @@ import("//services/service_manager/public/service_manifest.gni")
+ import("//services/service_manager/public/tools/test/service_test.gni")
+ 
+ component("lib") {
+-  friend = [
+-    ":tests",
+-    ":test_support",
+-  ]
+   public = [
+     "gpu_support.h",
+     "ids.h",
 diff --git a/third_party/blink/renderer/core/editing/editing_behavior.h b/third_party/blink/renderer/core/editing/editing_behavior.h
 index 90f13baf5daa216c0832b39137ba87f60aa2ccd2..643caf4e6825e3da6678af6a1a981c42d2bb782b 100644
 --- a/third_party/blink/renderer/core/editing/editing_behavior.h
@@ -2006,7 +2021,7 @@ index 65148fd17deb60813838de1d994c0b106f6cd737..d83c74331ee6e624b5600bc2408149fb
    "ios-aarch64/crypto/chacha/chacha-armv8.S",
    "ios-aarch64/crypto/fipsmodule/aesv8-armx64.S",
 diff --git a/third_party/boringssl/BUILD.gn b/third_party/boringssl/BUILD.gn
-index d31a9f29fa9c12e753708b2a1e75c33b70924300..4977f3268d04c2d3fd23c93e361a7f29be5113ed 100644
+index bcf9d30bd1824db03c4068d4763358aaec8406b1..b7121b28991ec036498eb18b0e652373bf09216a 100644
 --- a/third_party/boringssl/BUILD.gn
 +++ b/third_party/boringssl/BUILD.gn
 @@ -44,7 +44,7 @@ config("no_asm_config") {
@@ -2018,6 +2033,17 @@ index d31a9f29fa9c12e753708b2a1e75c33b70924300..4977f3268d04c2d3fd23c93e361a7f29
  all_headers = crypto_headers + ssl_headers
  
  # Windows' assembly is built with Yasm. The other platforms use the platform
+@@ -110,10 +110,6 @@ if (is_win && !is_msan) {
+ component("boringssl") {
+   sources = all_sources
+   public = all_headers
+-  friend = [
+-    ":boringssl_crypto_tests",
+-    ":boringssl_ssl_tests",
+-  ]
+   deps = [
+     ":boringssl_asm",
+     "//third_party/boringssl/src/third_party/fiat:fiat_license",
 diff --git a/third_party/crashpad/crashpad/handler/crash_report_upload_thread.cc b/third_party/crashpad/crashpad/handler/crash_report_upload_thread.cc
 index 715c533a2756506cc3151739fe458efd2dc5323d..30608c6852d0845566f2a05d620f6c86a5560161 100644
 --- a/third_party/crashpad/crashpad/handler/crash_report_upload_thread.cc
