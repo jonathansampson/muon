@@ -1,3 +1,15 @@
+diff --git a/.gn b/.gn
+index 65c8804cc47cd6a6b2057f11c1566df3adc338f3..f900220979323a72fe4ae4d8fdc0c4f261b9f6f7 100644
+--- a/.gn
++++ b/.gn
+@@ -151,7 +151,6 @@ check_targets = [
+ 
+   #"//third_party/*",  # May not ever want this.
+   #"//third_party/breakpad/*",  # Small errors.
+-  "//third_party/boringssl/*",
+   "//third_party/brotli/*",
+   "//third_party/hunspell/*",
+   "//third_party/leveldatabase/*",
 diff --git a/base/threading/thread_restrictions.h b/base/threading/thread_restrictions.h
 index 57f2f21e9ee03079d84965ba48256380a75b0180..d5c093d041f5908d1f0800efd4b2895e7e4ec6fc 100644
 --- a/base/threading/thread_restrictions.h
@@ -2021,7 +2033,7 @@ index 65148fd17deb60813838de1d994c0b106f6cd737..d83c74331ee6e624b5600bc2408149fb
    "ios-aarch64/crypto/chacha/chacha-armv8.S",
    "ios-aarch64/crypto/fipsmodule/aesv8-armx64.S",
 diff --git a/third_party/boringssl/BUILD.gn b/third_party/boringssl/BUILD.gn
-index bcf9d30bd1824db03c4068d4763358aaec8406b1..b7121b28991ec036498eb18b0e652373bf09216a 100644
+index d31a9f29fa9c12e753708b2a1e75c33b70924300..b7121b28991ec036498eb18b0e652373bf09216a 100644
 --- a/third_party/boringssl/BUILD.gn
 +++ b/third_party/boringssl/BUILD.gn
 @@ -44,7 +44,7 @@ config("no_asm_config") {
@@ -2033,14 +2045,11 @@ index bcf9d30bd1824db03c4068d4763358aaec8406b1..b7121b28991ec036498eb18b0e652373
  all_headers = crypto_headers + ssl_headers
  
  # Windows' assembly is built with Yasm. The other platforms use the platform
-@@ -110,10 +110,6 @@ if (is_win && !is_msan) {
+@@ -110,7 +110,6 @@ if (is_win && !is_msan) {
  component("boringssl") {
    sources = all_sources
    public = all_headers
--  friend = [
--    ":boringssl_crypto_tests",
--    ":boringssl_ssl_tests",
--  ]
+-  friend = [ ":*" ]
    deps = [
      ":boringssl_asm",
      "//third_party/boringssl/src/third_party/fiat:fiat_license",
