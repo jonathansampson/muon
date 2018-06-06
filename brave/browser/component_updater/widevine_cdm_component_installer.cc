@@ -50,7 +50,9 @@
 
 #include "widevine_cdm_version.h"  // In SHARED_INTERMEDIATE_DIR. NOLINT
 
+
 using component_updater::ComponentInstallerPolicy;
+using component_updater::ComponentInstaller;
 using component_updater::ComponentUpdateService;
 using content::BrowserThread;
 using content::CdmRegistry;
@@ -313,39 +315,6 @@ bool ParseManifest(
          GetCodecs(manifest, supported_video_codecs);
 }
 
-void WidevineCdmComponentInstallerPolicy::RegisterWidevineCdmWithBrave(
-    const base::Version& cdm_version,
-    const base::FilePath& cdm_install_dir,
-    std::unique_ptr<base::DictionaryValue> manifest) {
-  DCHECK_CURRENTLY_ON(BrowserThread::UI);
-  std::vector<media::VideoCodec> supported_video_codecs;
-  bool supports_persistent_license;
-  base::flat_set<media::EncryptionMode> supported_encryption_schemes;
-
-  // This check must be a subset of the check in VerifyInstallation() to
-  // avoid the case where the CDM is accepted by the component updater
-  // but not registered.
-  if (!ParseManifest(*manifest, &supported_video_codecs,
-                     &supports_persistent_license,
-                     &supported_encryption_schemes)) {
-    VLOG(1) << "Not registering Widevine CDM due to malformed manifest.";
-    return;
-  }
-
-  VLOG(1) << "Register Widevine CDM with Chrome";
-
-  const base::FilePath cdm_path =
-      GetPlatformDirectory(cdm_install_dir)
-          .AppendASCII(base::GetNativeLibraryName(kWidevineCdmLibraryName));
-  CdmRegistry::GetInstance()->RegisterCdm(content::CdmInfo(
-      kWidevineCdmDisplayName, kWidevineCdmGuid, cdm_version, cdm_path,
-      kWidevineCdmFileSystemId, supported_video_codecs,
-      supports_persistent_license, supported_encryption_schemes,
-      kWidevineKeySystem, false));
-
-  ready_callback_.Run(cdm_install_dir);
-}
-
 }  // namespace
 
 class WidevineCdmComponentInstallerPolicy : public ComponentInstallerPolicy {
@@ -486,6 +455,40 @@ void WidevineCdmComponentInstallerPolicy::UpdateCdmPath(
                          base::Unretained(this), cdm_version,
                          absolute_cdm_install_dir, base::Passed(&manifest)));
 }
+
+void WidevineCdmComponentInstallerPolicy::RegisterWidevineCdmWithBrave(
+    const base::Version& cdm_version,
+    const base::FilePath& cdm_install_dir,
+    std::unique_ptr<base::DictionaryValue> manifest) {
+  DCHECK_CURRENTLY_ON(BrowserThread::UI);
+  std::vector<media::VideoCodec> supported_video_codecs;
+  bool supports_persistent_license;
+  base::flat_set<media::EncryptionMode> supported_encryption_schemes;
+
+  // This check must be a subset of the check in VerifyInstallation() to
+  // avoid the case where the CDM is accepted by the component updater
+  // but not registered.
+  if (!ParseManifest(*manifest, &supported_video_codecs,
+                     &supports_persistent_license,
+                     &supported_encryption_schemes)) {
+    VLOG(1) << "Not registering Widevine CDM due to malformed manifest.";
+    return;
+  }
+
+  VLOG(1) << "Register Widevine CDM with Chrome";
+
+  const base::FilePath cdm_path =
+      GetPlatformDirectory(cdm_install_dir)
+          .AppendASCII(base::GetNativeLibraryName(kWidevineCdmLibraryName));
+  CdmRegistry::GetInstance()->RegisterCdm(content::CdmInfo(
+      kWidevineCdmDisplayName, kWidevineCdmGuid, cdm_version, cdm_path,
+      kWidevineCdmFileSystemId, supported_video_codecs,
+      supports_persistent_license, supported_encryption_schemes,
+      kWidevineKeySystem, false));
+
+  ready_callback_.Run(cdm_install_dir);
+}
+
 
 #endif  // defined(WIDEVINE_CDM_AVAILABLE) && defined(WIDEVINE_CDM_IS_COMPONENT)
 
