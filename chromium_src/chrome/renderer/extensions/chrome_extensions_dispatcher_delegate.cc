@@ -210,6 +210,8 @@ void ChromeExtensionsDispatcherDelegate::PopulateSourceMap(
                              IDR_ATOM_WINDOWS_BINDINGS_JS);
   source_map->RegisterSource("cookies",
                              IDR_ATOM_COOKIES_BINDINGS_JS);
+  source_map->RegisterSource("i18n",
+                             IDR_ATOM_I18N_BINDINGS_JS);
   source_map->RegisterSource("protocol",
                              IDR_ATOM_PROTOCOL_BINDINGS_JS);
   source_map->RegisterSource("ChromeSetting", IDR_CHROME_SETTING_JS);
